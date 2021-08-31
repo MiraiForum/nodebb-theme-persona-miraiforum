@@ -1,7 +1,7 @@
 {
-    "id": "nodebb-theme-persona",
-    "name": "Persona",
-    "description": "The default theme for NodeBB. Uses a standard approach to forum design.",
-    "url": "https://github.com/psychobunny/nodebb-theme-persona",
+    "id": "nodebb-theme-persona-miraiforum",
+    "name": "Persona-MiraiForum",
+    "description": "miraiforum 修改版",
+    "url": "https://github.com/mzdluo123/nodebb-theme-persona",
     "screenshot": "screenshot.png"
 }

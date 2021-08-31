@@ -27,10 +27,10 @@
 					<a href="{config.relative_path}/category/{category.slug}">{category.name}</a>
 				</div>
 
-				<div class="tags tag-list inline-block hidden-xs">
+				<div class="tags tag-list inline-block">
 					<!-- IMPORT partials/topic/tags.tpl -->
 				</div>
-				<div class="inline-block hidden-xs">
+				<div class="inline-block">
 					<!-- IMPORT partials/topic/stats.tpl -->
 				</div>
 				{{{ if !feeds:disableRSS }}}
