@@ -51,14 +51,15 @@
 				</small>
 				<!-- ENDIF !template.category -->
 
-				<!-- IF topics.tags.length -->
+
+				{{{ if topics.tags.length }}}
 				<span class="tag-list">
 					{{{each topics.tags}}}
-					<a href="{config.relative_path}/tags/{topics.tags.valueEscaped}"><span class="tag tag-{topics.tags.valueEscaped}" style="<!-- IF topics.tags.color -->color: {topics.tags.color};<!-- ENDIF topics.tags.color --><!-- IF topics.tags.bgColor -->background-color: {topics.tags.bgColor};<!-- ENDIF topics.tags.bgColor -->">{topics.tags.valueEscaped}</span></a>
+					<a href="{config.relative_path}/tags/{topics.tags.valueEncoded}"><span class="tag tag-item tag-class-{topics.tags.class}">{topics.tags.valueEscaped}</span></a>
 					{{{end}}}
 					<small>&bull;</small>
 				</span>
-				<!-- ENDIF topics.tags.length -->
+				{{{ end }}}
 
 				<small class="hidden-xs"><span class="timeago" title="{topics.timestampISO}"></span> &bull; <a href="<!-- IF topics.user.userslug -->{config.relative_path}/user/{topics.user.userslug}<!-- ELSE -->#<!-- ENDIF topics.user.userslug -->">{topics.user.displayname}</a></small>
 				<small class="visible-xs-inline">
