@@ -41,13 +41,19 @@
 	}
 	.topic-header {
 		position: sticky;
-		top: @navbar-height;
+		top: calc(var(--panel-offset) + @navbar-height);
 		background-color: @body-bg;
 		z-index: @zindex-navbar;
 		margin-left: -15px;
 		margin-right: -15px;
 		padding-left: 15px;
 		padding-right: 15px;
+	}
+
+	@media (max-width: @screen-md-max) {
+		.topic-header {
+			top: calc(var(--panel-offset) + @navbar-height - 70px);
+		}
 	}
 
 	.topic-info {
@@ -413,7 +419,7 @@
 
 .topic {
 	&.deleted {
-		.opacity(0.3);
+		opacity: 0.3;
 
 		.votes {
 			display: none;
@@ -438,7 +444,7 @@
 
 			&.deleted {
 				> .content {
-					.opacity(0.3);
+					opacity: 0.3;
 				}
 
 				.votes {
@@ -645,6 +651,16 @@
 	position: fixed;
 	bottom: 10%;
 	right: 2rem;
+	z-index: 1;
+}
+
+.selection-tooltip-container {
+	position: absolute;
+	padding: 5px;
+	border: 1px solid @well-border;
+	background-color: @well-bg;
+	border-radius: 3px;
+	margin: 10px 0px 0px 0px;
 	z-index: 1;
 }
 

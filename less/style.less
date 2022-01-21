@@ -18,6 +18,10 @@ body {
 	min-height: 100%;
 }
 
+#panel {
+	padding-top: var(--panel-offset);
+}
+
 @media (max-width: @screen-xs-max) {
 	.slideout-panel {
 		min-height: 100vh;
@@ -273,6 +277,10 @@ a.permalink {
 	}
 }
 
+.deco-none, .deco-none:link, .deco-none:hover {
+	color: inherit;
+	text-decoration: inherit;
+}
 
 .disabled a {
 	pointer-events: none;

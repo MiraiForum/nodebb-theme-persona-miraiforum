@@ -22,14 +22,14 @@
 		margin-bottom: 1em;
 		background-origin: content-box;
 		width: 100%;
-		top: 50px;
+		top: calc(var(--panel-offset) + @navbar-height);
 		position: absolute;
 		left: auto;
 		right: 0px;
 
 		&:hover {
 			.controls {
-				.opacity(0.8);
+				opacity: 0.8;
 			}
 		}
 
@@ -37,7 +37,7 @@
 			text-align: center;
 			min-height: 200px;
 			line-height: 200px;
-			.opacity(0);
+			opacity: 0;
 			.transition(opacity .15s linear);
 			cursor: pointer;
 			pointer-events: none;

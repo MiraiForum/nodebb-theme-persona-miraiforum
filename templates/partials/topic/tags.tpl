@@ -1,5 +1,5 @@
 {{{each tags}}}
-<a href="{config.relative_path}/tags/{tags.value}">
-    <span class="tag tag-item tag-{tags.valueEscaped}" data-tag="{tags.value}" style="<!-- IF tags.color -->color: {tags.color};<!-- ENDIF tags.color --><!-- IF tags.bgColor -->background-color: {tags.bgColor};<!-- ENDIF tags.bgColor -->">{tags.valueEscaped}</span>
+<a href="{config.relative_path}/tags/{tags.valueEncoded}">
+    <span class="tag tag-item tag-class-{tags.class}" data-tag="{tags.value}">{tags.valueEscaped}</span>
 </a>
 {{{end}}}
