@@ -1,4 +1,8 @@
 .header, .slideout-menu {
+	.notifications .dropdown-menu {
+		padding: 0;
+	}
+
 	.notification-list {
 		overflow-x: hidden;
 		overflow-y: auto;
@@ -30,6 +34,11 @@
 					margin-right: 60px;
 					display: block;
 					min-height: 32px;
+				}
+				.relTime {
+					font-size: 10px;
+					margin-top: 10px;
+					margin-right: 10px;
 				}
 			}
 
@@ -168,14 +177,12 @@
 	}
 
 	.notif-dropdown-link {
-		// margin-top: 1em;
 		border-top: 1px solid rgba(163, 163, 163, 0.5);
-		padding: 0 5px 0 5px;
 
 		a {
 			display: block;
 			text-align: center;
-			padding: 0.5em 0;
+			padding: 0.5em 0.5em;
 			font-weight: 600;
 		}
 	}
@@ -400,26 +407,5 @@ label.dropdown-toggle {
 html[data-dir="rtl"] {
 	.dropdown-menu > li > form > button {
 		text-align: right;
-	}
-}
-
-#mobile-menu:focus i.fa-bars {
-	-webkit-animation: fa-spin 2s infinite linear;
-	animation: fa-spin 2s infinite linear;
-
-	&::before {
-		font-family: "FontAwesome";
-		content: "\f110";
-	}
-}
-
-@keyframes fa-spin {
-	0% {
-		-webkit-transform: rotate(0deg);
-		transform: rotate(0deg);
-	}
-	100% {
-		-webkit-transform: rotate(359deg);
-		transform: rotate(359deg);
 	}
 }

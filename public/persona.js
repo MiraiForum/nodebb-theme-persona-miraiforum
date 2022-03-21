@@ -10,10 +10,6 @@ $(document).ready(function () {
 	$(window).on('resize', utils.debounce(configureNavbarHiding, 200));
 	$(window).on('resize', updatePanelOffset);
 
-	$(window).on('action:app.loggedIn', function () {
-		setupMobileMenu();
-	});
-
 	$(window).on('action:app.load', function () {
 		setupTaskbar();
 		setupMobileMenu();
@@ -40,6 +36,7 @@ $(document).ready(function () {
 			offset -= 70;
 		}
 
+		offset = Math.max(0, offset);
 		document.documentElement.style.setProperty('--panel-offset', `${offset}px`);
 	}
 
@@ -48,42 +45,56 @@ $(document).ready(function () {
 		if (!$.fn.autoHidingNavbar) {
 			return;
 		}
-		var env = utils.findBootstrapEnvironment();
-		// if env didn't change don't destroy and recreate
-		if (env === lastBSEnv) {
-			return;
-		}
-		lastBSEnv = env;
-		var navbarEl = $('.navbar-fixed-top');
-		navbarEl.autoHidingNavbar('destroy').removeData('plugin_autoHidingNavbar');
-		navbarEl.css('top', '');
 
-		if (env === 'xs' || env === 'sm') {
-			navbarEl.autoHidingNavbar({
-				showOnBottom: false,
-			});
-		}
+		require(['hooks', 'storage'], (hooks, Storage) => {
+			let preference = ['xs', 'sm'];
 
-		function fixTopCss(topValue) {
-			if (ajaxify.data.template.topic) {
-				$('.topic .topic-header').css({ top: topValue });
-			} else {
-				var topicListHeader = $('.topic-list-header');
-				if (topicListHeader.length) {
-					topicListHeader.css({ top: topValue });
-				}
+			try {
+				preference = JSON.parse(Storage.getItem('persona:navbar:autohide')) || preference;
+			} catch (e) {
+				console.warn('[persona/settings] Unable to parse value for navbar autohiding');
 			}
-		}
+			var env = utils.findBootstrapEnvironment();
+			// if env didn't change don't destroy and recreate
+			if (env === lastBSEnv) {
+				return;
+			}
+			lastBSEnv = env;
+			var navbarEl = $('.navbar-fixed-top');
+			navbarEl.autoHidingNavbar('destroy').removeData('plugin_autoHidingNavbar');
+			navbarEl.css('top', '');
 
-		navbarEl.off('show.autoHidingNavbar')
-			.on('show.autoHidingNavbar', function () {
-				fixTopCss('');
-			});
+			hooks.fire('filter:persona.configureNavbarHiding', {
+				resizeEnvs: preference,
+			}).then(({ resizeEnvs }) => {
+				if (resizeEnvs.includes(env)) {
+					navbarEl.autoHidingNavbar({
+						showOnBottom: false,
+					});
+				}
 
-		navbarEl.off('hide.autoHidingNavbar')
-			.on('hide.autoHidingNavbar', function () {
-				fixTopCss('0px');
+				function fixTopCss(topValue) {
+					if (ajaxify.data.template.topic) {
+						$('.topic .topic-header').css({ top: topValue });
+					} else {
+						var topicListHeader = $('.topic-list-header');
+						if (topicListHeader.length) {
+							topicListHeader.css({ top: topValue });
+						}
+					}
+				}
+
+				navbarEl.off('show.autoHidingNavbar')
+					.on('show.autoHidingNavbar', function () {
+						fixTopCss('');
+					});
+
+				navbarEl.off('hide.autoHidingNavbar')
+					.on('hide.autoHidingNavbar', function () {
+						fixTopCss('0px');
+					});
 			});
+		});
 	}
 
 	function setupNProgress() {
@@ -196,14 +207,14 @@ $(document).ready(function () {
 			return;
 		}
 
-		require(['pulling', 'storage'], function (Pulling, Storage) {
+		require(['pulling', 'storage', 'alerts', 'search'], function (Pulling, Storage, alerts, search) {
 			if (!Pulling) {
 				return;
 			}
 
 			// initialization
 
-			var chatMenuVisible = !config.disableChat && app.user && parseInt(app.user.uid, 10);
+			var chatMenuVisible = app.user && parseInt(app.user.uid, 10);
 			var swapped = !!Storage.getItem('persona:menus:legacy-layout');
 			var margin = window.innerWidth;
 
@@ -285,18 +296,6 @@ $(document).ready(function () {
 				navSlideout.enable().toggle();
 			});
 
-			function loadNotifications() {
-				require(['notifications'], function (notifications) {
-					const notifList = $('#menu [data-section="notifications"] ul');
-					notifications.loadNotifications(notifList, function () {
-						notifList.find('.deco-none').removeClass('deco-none');
-						console.log(notifList.find('.deco-none'));
-					});
-				});
-			}
-
-			navSlideout.on('opened', loadNotifications);
-
 			if (chatMenuVisible) {
 				navSlideout.on('beforeopen', function () {
 					chatsSlideout.close();
@@ -306,22 +305,29 @@ $(document).ready(function () {
 				});
 			}
 
-			$('#menu [data-section="navigation"] ul').html($('#main-nav').html() + ($('#search-menu').html() || '') + ($('#logged-out-menu').html() || ''));
+			$('#menu [data-section="navigation"] ul').html(
+				$('#main-nav').html() +
+				($('#logged-out-menu').html() || '')
+			);
 
-			$('#user-control-list').children().clone(true, true).appendTo($('#menu [data-section="profile"] ul'));
+			$('#user-control-list').children().clone(true, true).appendTo($('#chats-menu [data-section="profile"] ul'));
 
 			socket.on('event:user_status_change', function (data) {
 				if (parseInt(data.uid, 10) === app.user.uid) {
-					app.updateUserStatus($('#menu [component="user/status"]'), data.status);
+					app.updateUserStatus($('#chats-menu [component="user/status"]'), data.status);
 					navSlideout.close();
 				}
 			});
 
-			// right slideout chats menu
+			// right slideout notifications & chats menu
 
-			function loadChats() {
-				require(['chat'], function (chat) {
-					chat.loadChatsDropdown($('#chats-menu .chat-list'));
+			function loadNotificationsAndChats() {
+				require(['notifications', 'chat'], function (notifications, chat) {
+					const notifList = $('#chats-menu [data-section="notifications"] ul');
+					notifications.loadNotifications(notifList, function () {
+						notifList.find('.deco-none').removeClass('deco-none');
+						chat.loadChatsDropdown($('#chats-menu .chat-list'));
+					});
 				});
 			}
 
@@ -335,7 +341,7 @@ $(document).ready(function () {
 				});
 
 				chatsSlideout
-					.on('opened', loadChats)
+					.on('opened', loadNotificationsAndChats)
 					.on('beforeopen', function () {
 						navSlideout.close().disable();
 					})
@@ -344,31 +350,35 @@ $(document).ready(function () {
 					});
 			}
 
-			// add a checkbox in the user settings page
-			// so users can swap the sides the menus appear on
-
-			function setupSetting() {
-				if (ajaxify.data.template['account/settings'] && !document.getElementById('persona:menus:legacy-layout')) {
-					require(['translator'], function (translator) {
-						translator.translate('[[persona:mobile-menu-side]]', function (translated) {
-							$('<div class="well checkbox"><label><input type="checkbox" id="persona:menus:legacy-layout"/><strong>' + translated + '</strong></label></div>')
-								.appendTo('#content .account > .row > div:first-child')
-								.find('input')
-								.prop('checked', Storage.getItem('persona:menus:legacy-layout', 'true'))
-								.change(function (e) {
-									if (e.target.checked) {
-										Storage.setItem('persona:menus:legacy-layout', 'true');
-									} else {
-										Storage.removeItem('persona:menus:legacy-layout');
-									}
-								});
-						});
+			const searchInputEl = $('.navbar-header .navbar-search input[name="term"]');
+			const searchButton = $('.navbar-header .navbar-search button[type="button"]');
+			searchButton.off('click').on('click', function () {
+				if (!config.loggedIn && !app.user.privileges['search:content']) {
+					alerts.alert({
+						message: '[[error:search-requires-login]]',
+						timeout: 3000,
 					});
+					ajaxify.go('login');
+					return false;
 				}
-			}
 
-			$(window).on('action:ajaxify.end', setupSetting);
-			setupSetting();
+				searchButton.addClass('hidden');
+				searchInputEl.removeClass('hidden').focus();
+				return false;
+			});
+			searchInputEl.on('blur', function () {
+				searchInputEl.addClass('hidden');
+				searchButton.removeClass('hidden');
+			});
+			search.enableQuickSearch({
+				searchElements: {
+					inputEl: searchInputEl,
+					resultEl: $('.navbar-header .navbar-search .quick-search-container'),
+				},
+				searchOptions: {
+					in: config.searchDefaultInQuick,
+				},
+			});
 		});
 	}
 

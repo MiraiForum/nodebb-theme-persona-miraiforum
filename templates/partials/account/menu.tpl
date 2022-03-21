@@ -33,16 +33,26 @@
 		<!-- ENDIF canEdit -->
 
 		<!-- IF !isSelf -->
-		<!-- IF canBan -->
+		{{{ if (canBan || canMute) }}}
 		<li role="separator" class="divider"></li>
 		<li class="dropdown-header">[[user:admin_actions_label]]</li>
+		{{{ end }}}
+		{{{ if canBan }}}
 		<li class="<!-- IF banned -->hide<!-- ENDIF banned -->">
 			<a component="account/ban" href="#">[[user:ban_account]]</a>
 		</li>
 		<li class="<!-- IF !banned -->hide<!-- ENDIF !banned -->">
 			<a component="account/unban" href="#">[[user:unban_account]]</a>
 		</li>
-		<!-- ENDIF canBan -->
+		{{{ end }}}
+		{{{ if canMute }}}
+		<li class="<!-- IF muted -->hide<!-- ENDIF muted -->">
+			<a component="account/mute" href="#">[[user:mute_account]]</a>
+		</li>
+		<li class="<!-- IF !muted -->hide<!-- ENDIF !muted -->">
+			<a component="account/unmute" href="#">[[user:unmute_account]]</a>
+		</li>
+		{{{ end }}}
 		<!-- IF isAdmin -->
 		<li>
 			<a component="account/delete-account" href="#" class="">[[user:delete_account_as_admin]]</a>
@@ -63,6 +73,7 @@
 		<li><a href="{config.relative_path}/user/{userslug}/posts">[[global:posts]] <span class="badge badge-default pull-right formatted-number" title="{counts.posts}">{counts.posts}</span></a></li>
 		<!-- IF !reputation:disabled -->
 		<li><a href="{config.relative_path}/user/{userslug}/best">[[global:best]] <span class="badge badge-default pull-right formatted-number" title="{counts.best}">{counts.best}</span></a></li>
+		<li><a href="{config.relative_path}/user/{userslug}/controversial">[[global:controversial]] <span class="badge badge-default pull-right formatted-number" title="{counts.controversial}">{counts.controversial}</span></a></li>
 		<!-- ENDIF !reputation:disabled -->
 		<li><a href="{config.relative_path}/user/{userslug}/groups">[[global:header.groups]] <span class="badge badge-default pull-right formatted-number" title="{counts.groups}">{counts.groups}</span></a></li>
 

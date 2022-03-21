@@ -1,12 +1,28 @@
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle pull-left" id="mobile-menu">
+					<i class="fa fa-lg fa-fw fa-bars unread-count" data-content="{unreadCount.mobileUnread}" data-unread-url="{unreadCount.unreadUrl}"></i>
+				</button>
+				{{{ if config.loggedIn }}}
+				<button type="button" class="navbar-toggle" id="mobile-chats">
 					<span component="notifications/icon" class="notification-icon fa fa-fw fa-bell-o unread-count" data-content="{unreadCount.notification}"></span>
-					<i class="fa fa-lg fa-fw fa-bars"></i>
-				</button>
-				<button type="button" class="navbar-toggle hidden" id="mobile-chats">
 					<span component="chat/icon" class="notification-icon fa fa-fw fa-comments unread-count" data-content="{unreadCount.chat}"></span>
-					<i class="fa fa-lg fa-comment-o"></i>
+					{buildAvatar(user, "md", true)}
 				</button>
+				{{{ end }}}
+
+				{{{ if config.searchEnabled }}}
+				<div class="navbar-search visible-xs pull-right">
+					<form action="{config.relative_path}/search" method="GET">
+						<button type="button" class="btn btn-link"><i class="fa fa-lg fa-fw fa-search" title="[[global:header.search]]"></i></button>
+						<input autocomplete="off" type="text" class="form-control hidden" name="term" placeholder="[[global:search]]"/>
+						<button class="btn btn-primary hidden" type="submit"></button>
+						<input type="text" class="hidden" name="in" value="{config.searchDefaultInQuick}" />
+					</form>
+					<div class="quick-search-container hidden">
+						<div class="quick-search-results-container"></div>
+					</div>
+				</div>
+				{{{ end }}}
 
 				<!-- IF brand:logo -->
 				<a href="<!-- IF brand:logo:url -->{brand:logo:url}<!-- ELSE -->{relative_path}/<!-- ENDIF brand:logo:url -->">

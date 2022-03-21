@@ -1,7 +1,5 @@
 // Make chats page edge-to-edge
 .page-user-chats {
-	padding-top: 50px;
-
 	#content.container {
 		width: auto;
 		padding: 0;
@@ -12,7 +10,6 @@
 	}
 
 	#panel {
-		padding-top: 0px;
 		padding-bottom: 0px;
 	}
 
@@ -30,27 +27,16 @@
 	[component="chat/nav-wrapper"] {
 		flex: 1;
 		flex-direction: column;
-		box-shadow: 0 3px 9px rgba(0,0,0,.5);
-
+		padding: 0px 15px;
 		.chats-list {
 			flex: 1;
 			overflow-y: auto;
 			margin-bottom: 0;
-			height: ~"calc(100% - 3em)";
+			height: ~"calc(100% - 5em)";
 		}
 
 		.chat-search {
-			background-color: @panel-default-heading-bg;
-			border-bottom: 1px solid @gray-dark;
-
-			input {
-				background-color: @gray-dark;
-				color: @gray-lighter;
-				border-radius: 0;
-				border: none;
-				height: ~"calc(3em - 2px)";
-			}
-
+			padding-bottom: 15px;
 			ul {
 				width: 100%;
 			}
@@ -60,7 +46,6 @@
 			padding: 0;
 			overflow-x: hidden;
 			overflow-y: auto;
-			border-top: 1px solid @gray-lighter;
 
 			li {
 				position: relative;
@@ -72,8 +57,7 @@
 				border-left: 1px solid;
 				border-right: 1px solid;
 				border-bottom: 1px solid;
-				border-color: #eee;
-				background: #fff;
+				border-color: @gray-lighter;
 
 				i {
 					position: relative;
@@ -94,7 +78,7 @@
 
 	[component="chat/main-wrapper"] {
 		flex: 3;
-
+		padding-bottom: 15px;
 		.alert {
 			margin: 1em;
 		}
@@ -112,9 +96,7 @@
 
 	[component="chat/header"] {
 		padding: @panel-heading-padding;
-		background-color: @gray-dark;
-		border-bottom: none;
-		color: @gray-lighter;
+		border-bottom: 1px solid @modal-header-border-color;
 
 		span {
 			font-weight: 500;
@@ -122,13 +104,11 @@
 
 		.close {
 			margin-left: 0.5em;
-			color: @gray-lighter;
 		}
 
 		.members {
 			a {
 				font-weight: 600;
-				color: @gray-lighter;
 			}
 		}
 
@@ -265,6 +245,7 @@
 		.teaser-timestamp {
 			font-size: 10px;
 			margin-top: 10px;
+			margin-right: 10px;
 		}
 
 		a {
@@ -611,6 +592,9 @@
 
 		.chats-full, .chat-modal {
 			height: calc(100vh - var(--panel-offset));
+		}
+		[component="chat/messages"] {
+			width: calc(100vw);
 		}
 	}
 
