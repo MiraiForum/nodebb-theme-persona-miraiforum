@@ -72,7 +72,7 @@
 	</li>
 	<!-- END -->
 
-	<!-- IF config.loggedIn -->
+	{{{ if config.loggedIn }}}
 	<li>
 		<a component="post/bookmark" role="menuitem" tabindex="-1" href="#" data-bookmarked="{posts.bookmarked}">
 			<span class="menu-icon">
@@ -83,7 +83,13 @@
 			<span component="post/bookmark-count" class="bookmarkCount badge" data-bookmarks="{posts.bookmarks}">{posts.bookmarks}</span>&nbsp;
 		</a>
 	</li>
-	<!-- ENDIF config.loggedIn -->
+	{{{ end }}}
+
+	<li>
+		<a role="menuitem" tabindex="-1" href="#" data-clipboard-text="{posts.absolute_url}">
+			<i class="fa fa-fw fa-link"></i> [[topic:copy-permalink]]
+		</a>
+	</li>
 
 	<!-- IF postSharing.length -->
 	<!-- IF config.loggedIn --><li class="divider"></li><!-- ENDIF config.loggedIn -->

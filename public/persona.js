@@ -2,7 +2,9 @@
 
 $(document).ready(function () {
 	setupNProgress();
+	setupTaskbar();
 	setupEditedByIcon();
+	setupMobileMenu();
 	setupQuickReply();
 	configureNavbarHiding();
 	updatePanelOffset();
@@ -10,13 +12,7 @@ $(document).ready(function () {
 	$(window).on('resize', utils.debounce(configureNavbarHiding, 200));
 	$(window).on('resize', updatePanelOffset);
 
-	$(window).on('action:app.load', function () {
-		setupTaskbar();
-		setupMobileMenu();
-	});
-
 	function updatePanelOffset() {
-		var env = utils.findBootstrapEnvironment();
 		const headerEl = document.getElementById('header-menu');
 
 		if (!headerEl) {
